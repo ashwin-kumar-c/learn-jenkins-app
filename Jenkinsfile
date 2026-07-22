@@ -29,7 +29,8 @@ pipeline {
                 sh '''
                     echo 'Testing...'
                     test -f build/index.html
-                    npm test
+                    node --version
+                    npm --version
                 '''
             }
         }

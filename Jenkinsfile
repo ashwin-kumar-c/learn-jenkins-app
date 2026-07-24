@@ -100,6 +100,7 @@ pipeline {
                     echo "Deploying to Production. Project ID: $NETLIFY_PROJECT_ID"
                     node_modules/.bin/netlify deploy \
                         --prod \
+                        --no-build \
                         --dir=build \
                         --site="$NETLIFY_PROJECT_ID" \
                         --auth="$NETLIFY_AUTH_TOKEN"

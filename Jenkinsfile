@@ -98,6 +98,11 @@ pipeline {
                     npm install netlify-cli
                     node_modules/.bin/netlify --version
                     echo "Deploying to Production. Project ID: $NETLIFY_PROJECT_ID"
+                    node_modules/.bin/netlify deploy \
+                        --prod \
+                        --dir=build \
+                        --site="$NETLIFY_PROJECT_ID" \
+                        --auth="$NETLIFY_AUTH_TOKEN"
                 '''
             }
         }

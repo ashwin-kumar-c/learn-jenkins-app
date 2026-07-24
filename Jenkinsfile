@@ -101,8 +101,8 @@ pipeline {
                     node_modules/.bin/netlify deploy \
                         --prod \
                         --dir=build \
-                        --site="NETLIFY_PROJECT_ID" \
-                        --auth="NETLIFY_AUTH_TOKEN"
+                        --site="$NETLIFY_PROJECT_ID" \
+                        --auth="$NETLIFY_AUTH_TOKEN"
                 '''
             }
         }

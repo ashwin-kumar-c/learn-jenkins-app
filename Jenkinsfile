@@ -85,7 +85,30 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy to Staging') {
+
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+
+            steps {
+                sh '''
+                    npm install netlify-cli
+                    node_modules/.bin/netlify --version
+                    echo "Deploying to Production. Project ID: $NETLIFY_PROJECT_ID"
+                    node_modules/.bin/netlify deploy \
+                        --no-build \
+                        --dir=build \
+                        --site="$NETLIFY_PROJECT_ID" \
+                        --auth="$NETLIFY_AUTH_TOKEN"
+                '''
+            }
+        }
+
+         stage('Deploy to Prod') {
 
             agent {
                 docker {

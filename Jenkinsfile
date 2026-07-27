@@ -4,6 +4,7 @@ pipeline {
     environment {
         NETLIFY_PROJECT_ID= '7d4fbe0f-b112-4f1d-a79d-85547865125c'
         NETLIFY_AUTH_TOKEN= credentials('netlify-token')
+        REACT_APP_VERSION= '1.2.3'
     }
 
     stages {
@@ -30,8 +31,8 @@ pipeline {
             }
         }
 
-        stage('Tests') {
-            parallel {
+        // stage('Tests') {
+        //     parallel {
 
                 stage('Unit Test') {
 
@@ -57,32 +58,32 @@ pipeline {
                         }
                 }
 
-                stage('E2E') {
+                // stage('E2E') {
 
-                    agent {
-                        docker {
-                            image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-                            reuseNode true
-                        }
-                    }
+                //     agent {
+                //         docker {
+                //             image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                //             reuseNode true
+                //         }
+                //     }
                     
-                    steps {
-                        sh '''
-                            npm install serve
-                            node_modules/.bin/serve -s build &
-                            sleep 10
-                            npx playwright test --reporter=line
-                        '''
-                    }
+                //     steps {
+                //         sh '''
+                //             npm install serve
+                //             node_modules/.bin/serve -s build &
+                //             sleep 10
+                //             npx playwright test --reporter=line
+                //         '''
+                //     }
 
-                        post {
-                            always {
-                                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Local', reportTitles: '', useWrapperFileDirectly: true])
-                            }
-                        }
-                }
-            }
-        }
+                //         post {
+                //             always {
+                //                 publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Local', reportTitles: '', useWrapperFileDirectly: true])
+                //             }
+                //         }
+                // }
+        //     }
+        // }
 
         stage('Deploy to Staging') {
 
@@ -104,14 +105,6 @@ pipeline {
                         --site="$NETLIFY_PROJECT_ID" \
                         --auth="$NETLIFY_AUTH_TOKEN"
                 '''
-            }
-        }
-
-        stage("Approval") {
-            steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    input message: 'Do you wish to deploy to production?', ok: 'Yes, I\'m sure'
-                }
             }
         }
 

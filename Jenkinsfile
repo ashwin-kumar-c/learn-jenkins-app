@@ -134,6 +134,7 @@ pipeline {
                         --dir=build \
                         --site="$NETLIFY_PROJECT_ID" \
                         --auth="$NETLIFY_AUTH_TOKEN"
+                    npx playwright test --reporter=line
                 '''
             }
 

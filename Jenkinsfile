@@ -9,12 +9,6 @@ pipeline {
 
     stages {
 
-        stage('Docker') {
-            steps {
-                sh 'docker build -t demo-playwright .'
-            }
-        }
-
         stage('Build') {
 
             agent {

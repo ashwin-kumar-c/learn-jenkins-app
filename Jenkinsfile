@@ -102,10 +102,9 @@ pipeline {
 
             steps {
                 sh '''
-                    npm install netlify-cli
-                    node_modules/.bin/netlify --version
+                    netlify --version
                     echo "Deploying to Production. Project ID: $NETLIFY_PROJECT_ID"
-                    node_modules/.bin/netlify deploy \
+                    netlify deploy \
                         --no-build \
                         --dir=build \
                         --site="$NETLIFY_PROJECT_ID" \
@@ -130,10 +129,9 @@ pipeline {
             steps {
                 sh '''
                 node --version
-                npm install netlify-cli
-                    node_modules/.bin/netlify --version
+                    netlify --version
                     echo "Deploying to Production. Project ID: $NETLIFY_PROJECT_ID"
-                    node_modules/.bin/netlify deploy \
+                    netlify deploy \
                         --prod \
                         --no-build \
                         --dir=build \

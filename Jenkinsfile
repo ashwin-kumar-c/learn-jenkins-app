@@ -37,8 +37,8 @@ pipeline {
             }
         }
 
-        // stage('Tests') {
-        //     parallel {
+        stage('Tests') {
+            parallel {
 
                 stage('Unit Test') {
 
@@ -64,32 +64,31 @@ pipeline {
                         }
                 }
 
-                // stage('E2E') {
+                stage('E2E') {
 
-                //     agent {
-                //         docker {
-                //             image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-                //             reuseNode true
-                //         }
-                //     }
+                    agent {
+                        docker {
+                            image 'demo-playwright'
+                            reuseNode true
+                        }
+                    }
                     
-                //     steps {
-                //         sh '''
-                //             npm install serve
-                //             node_modules/.bin/serve -s build &
-                //             sleep 10
-                //             npx playwright test --reporter=line
-                //         '''
-                //     }
+                    steps {
+                        sh '''
+                            serve -s build &
+                            sleep 10
+                            npx playwright test --reporter=line
+                        '''
+                    }
 
-                //         post {
-                //             always {
-                //                 publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Local', reportTitles: '', useWrapperFileDirectly: true])
-                //             }
-                //         }
-                // }
-        //     }
-        // }
+                        post {
+                            always {
+                                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Local', reportTitles: '', useWrapperFileDirectly: true])
+                            }
+                        }
+                }
+            }
+        }
 
         stage('Deploy to Staging') {
 

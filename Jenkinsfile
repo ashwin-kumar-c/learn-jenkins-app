@@ -19,12 +19,13 @@ pipeline {
 
             environment {
                 AWS_DEFAULT_REGION = 'ap-south-1'
+                AWS_S3_BUCKET = 's3-for-jenkins-dock'
             }
 
 
-              steps {
-        withCredentials([
-            usernamePassword(
+            steps {
+                withCredentials([
+                usernamePassword(
                 credentialsId: 'aws-creds',
                 usernameVariable: 'AWS_ACCESS_KEY_ID',
                 passwordVariable: 'AWS_SECRET_ACCESS_KEY'
@@ -33,7 +34,7 @@ pipeline {
             sh '''
                 aws --version
                 echo "Hello S3!" > index.html
-                aws s3 cp index.html s3://s3-for-jenkins-dock/index.html
+                aws s3 cp index.html s3://$AWS_S3_BUCKET/index.html
             '''
         }
     }

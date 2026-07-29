@@ -32,8 +32,8 @@ pipeline {
         ]) {
             sh '''
                 aws --version
-                aws sts get-caller-identity
-                aws s3 ls
+                echo "Hello S3!" > index.html
+                aws s3 cp index.html s3://s3-for-jenkins-dock/index.html
             '''
         }
     }

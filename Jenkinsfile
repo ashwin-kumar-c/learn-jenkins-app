@@ -9,7 +9,20 @@ pipeline {
 
     stages {
 
-        steps {
+        stage('AWS') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli'
+                    args "--entrypoint=''"
+                }
+            }
+
+            environment {
+                AWS_DEFAULT_REGION = 'ap-south-1'
+            }
+
+
+              steps {
         withCredentials([
             usernamePassword(
                 credentialsId: 'aws-creds',
@@ -24,6 +37,7 @@ pipeline {
             '''
         }
     }
+        }
 
         stage('Build') {
 

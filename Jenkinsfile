@@ -33,11 +33,10 @@ pipeline {
         ]) {
             sh '''
                 aws --version
-                echo "Hello S3!" > index.html
-                aws s3 cp index.html s3://$AWS_S3_BUCKET/index.html
+                aws s3 sync build s3://$AWS_S3_BUCKET
             '''
         }
-    }
+            }
         }
 
         stage('Build') {
@@ -59,6 +58,36 @@ pipeline {
                     npm run build
                     ls -la
                 '''
+            }
+        }
+
+                stage('AWS') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli'
+                    args "--entrypoint=''"
+                }
+            }
+
+            environment {
+                AWS_DEFAULT_REGION = 'ap-south-1'
+                AWS_S3_BUCKET = 's3-for-jenkins-dock'
+            }
+
+
+            steps {
+                withCredentials([
+                usernamePassword(
+                credentialsId: 'aws-creds',
+                usernameVariable: 'AWS_ACCESS_KEY_ID',
+                passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+            )
+        ]) {
+            sh '''
+                aws --version
+                aws s3 sync build s3://$AWS_S3_BUCKET
+            '''
+        }
             }
         }
 

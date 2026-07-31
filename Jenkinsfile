@@ -31,37 +31,6 @@ pipeline {
             }
         }
 
-        stage('AWS') {
-            agent {
-                docker {
-                    image 'amazon/aws-cli'
-                    reuseNode true
-                    args "--entrypoint=''"
-                }
-            }
-
-            environment {
-                AWS_DEFAULT_REGION = 'ap-south-1'
-                AWS_S3_BUCKET = 's3-for-jenkins-dock'
-            }
-
-
-            steps {
-                withCredentials([
-                usernamePassword(
-                credentialsId: 'aws-creds',
-                usernameVariable: 'AWS_ACCESS_KEY_ID',
-                passwordVariable: 'AWS_SECRET_ACCESS_KEY'
-            )
-        ]) {
-            sh '''
-                aws --version
-                aws s3 sync build s3://$AWS_S3_BUCKET
-            '''
-        }
-            }
-        }
-
         stage('Tests') {
             parallel {
 
@@ -137,7 +106,38 @@ pipeline {
             }
         }
 
-        stage('Prod Deploy & E2E Test') {
+        stage('Deploy to AWS Prod') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli'
+                    reuseNode true
+                    args "--entrypoint=''"
+                }
+            }
+
+            environment {
+                AWS_DEFAULT_REGION = 'ap-south-1'
+                AWS_S3_BUCKET = 's3-for-jenkins-dock'
+            }
+
+
+            steps {
+                withCredentials([
+                usernamePassword(
+                credentialsId: 'aws-creds',
+                usernameVariable: 'AWS_ACCESS_KEY_ID',
+                passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+            )
+        ]) {
+            sh '''
+                aws --version
+                aws s3 sync build s3://$AWS_S3_BUCKET
+            '''
+        }
+            }
+        }
+
+        stage('E2E Test') {
 
             agent {
                 docker {
@@ -146,21 +146,8 @@ pipeline {
                 }
             }
 
-            environment {
-                CI_ENVIRONMENT_URL= 'https://gentle-quokka-1d7e01.netlify.app'
-            }
-            
             steps {
                 sh '''
-                node --version
-                    netlify --version
-                    echo "Deploying to Production. Project ID: $NETLIFY_PROJECT_ID"
-                    netlify deploy \
-                        --prod \
-                        --no-build \
-                        --dir=build \
-                        --site="$NETLIFY_PROJECT_ID" \
-                        --auth="$NETLIFY_AUTH_TOKEN"
                     npx playwright test --reporter=line
                 '''
             }

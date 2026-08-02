@@ -17,7 +17,7 @@ pipeline {
             }
 
             environment {
-                AWS_DEFAULT_REGION = 'ap-south-1'
+                AWS_DEFAULT_REGION = 'us-east-1'
                 AWS_S3_BUCKET = 's3-for-jenkins-dock'
             }
 

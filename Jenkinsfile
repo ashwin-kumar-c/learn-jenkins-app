@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         REACT_APP_VERSION= "1.0.$BUILD_ID"
+        APP_NAME="myjenkinsapp"
     }
 
     stages {
@@ -40,7 +41,7 @@ pipeline {
 
             steps {
                 sh '''
-                    docker build -t myjenkinsapp .
+                    docker build -t $APP_NAME:$REACT_APP_VERSION .
                 '''
             }
         }

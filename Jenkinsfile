@@ -7,7 +7,35 @@ pipeline {
 
     stages {
 
-        stage('Update to AWS') {
+        stage('Build') {
+
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+
+            steps {
+                sh '''
+                    echo 'Building Started ....'
+                    ls -la
+                    node --version
+                    npm --version
+                    npm ci
+                    npm run build
+                    ls -la
+                '''
+            }
+        }
+
+        stage('Build Docker') {
+            steps {
+                sh 'docker build -t myjenkinsapp .'
+            }
+        }
+
+        stage('Deploy to AWS') {
             agent {
                 docker {
                     image 'amazon/aws-cli'
@@ -49,28 +77,6 @@ pipeline {
         }
             }
         }
-
-        // stage('Build') {
-
-        //     agent {
-        //         docker {
-        //             image 'node:18-alpine'
-        //             reuseNode true
-        //         }
-        //     }
-
-        //     steps {
-        //         sh '''
-        //             echo 'Building Started ....'
-        //             ls -la
-        //             node --version
-        //             npm --version
-        //             npm ci
-        //             npm run build
-        //             ls -la
-        //         '''
-        //     }
-        // }
 
         // stage('Tests') {
         //     parallel {

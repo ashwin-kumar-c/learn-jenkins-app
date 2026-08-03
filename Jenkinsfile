@@ -48,7 +48,7 @@ pipeline {
         stage('Deploy to AWS') {
             agent {
                 docker {
-                    image 'demo-aws-cli'
+                    image 'amazon/aws-cli'
                     reuseNode true
                     args "-u root --entrypoint=''"
                 }

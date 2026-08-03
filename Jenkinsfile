@@ -4,6 +4,7 @@ pipeline {
     environment {
         REACT_APP_VERSION= "1.0.$BUILD_ID"
         APP_NAME="myjenkinsapp"
+        AWS_DOCKER_REGISTRY = '685448854752.dkr.ecr.us-east-1.amazonaws.com'
     }
 
     stages {
@@ -63,7 +64,6 @@ pipeline {
                 AWS_ECS_CLUSTER = 'jenkins-cluster'
                 AWS_ECS_SERVICE_PROD = 'Jenkins-Service-Prod'
                 AWS_ECS_TD_PROD = 'Jenkins-TaskDefinition-Prod'
-                AWS_DOCKER_REGISTRY = '685448854752.dkr.ecr.us-east-1.amazonaws.com'
             }
 
 

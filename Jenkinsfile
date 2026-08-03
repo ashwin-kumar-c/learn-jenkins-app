@@ -39,6 +39,9 @@ pipeline {
                 --cluster jenkins-cluster \
                 --service Jenkins-Service-Prod \
                 --task-definition Jenkins-TaskDefinition-Prod:$LATEST_TD_REVISION
+                aws ecs wait services-stable \
+                --cluster jenkins-cluster \
+                --services Jenkins-Service-Prod 
             '''
         }
             }

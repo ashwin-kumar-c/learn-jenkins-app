@@ -32,7 +32,7 @@ pipeline {
         stage('Build Docker') {
             agent {
                 docker {
-                    image 'docker:27-cli'
+                    image 'demo-aws-cli'
                     reuseNode true
                     args '--entrypoint="" -u 0:0 -v /var/run/docker.sock:/var/run/docker.sock'
                 }
@@ -48,7 +48,7 @@ pipeline {
         stage('Deploy to AWS') {
             agent {
                 docker {
-                    image 'amazon/aws-cli'
+                    image 'demo-aws-cli'
                     reuseNode true
                     args "-u root --entrypoint=''"
                 }

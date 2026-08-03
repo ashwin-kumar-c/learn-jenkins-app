@@ -19,6 +19,9 @@ pipeline {
             environment {
                 AWS_DEFAULT_REGION = 'us-east-1'
                 AWS_S3_BUCKET = 's3-for-jenkins-dock'
+                AWS_ECS_CLUSTER = 'jenkins-cluster'
+                AWS_ECS_SERVICE_PROD = 'Jenkins-Service-Prod'
+                AWS_ECS_TD_PROD = 'Jenkins-TaskDefinition-Prod'
             }
 
 
@@ -36,12 +39,12 @@ pipeline {
                 LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | jq '.taskDefinition.revision')
                 echo $LATEST_TD_REVISION
                 aws ecs update-service \
-                --cluster jenkins-cluster \
-                --service Jenkins-Service-Prod \
-                --task-definition Jenkins-TaskDefinition-Prod:$LATEST_TD_REVISION
+                --cluster $AWS_ECS_CLUSTER \
+                --service $AWS_ECS_SERVICE_PROD \
+                --task-definition $AWS_ECS_TD_PROD:$LATEST_TD_REVISION
                 aws ecs wait services-stable \
-                --cluster jenkins-cluster \
-                --services Jenkins-Service-Prod 
+                --cluster $AWS_ECS_CLUSTER \
+                --services $AWS_ECS_SERVICE_PROD 
             '''
         }
             }
